@@ -19,23 +19,30 @@ class NewRoom(View):
 
     def post(self, request):
         name = request.POST.get('room_name')
-        capacity = request.POST.get('room_capacity')
+        capacity = int(request.POST.get('room_capacity'))
         projector_yes = request.POST.get('projector_yes')
         projector_no = request.POST.get('projector_no')
         rooms = Room.objects.order_by('id')
         if not name:
-            return HttpResponse ('Name field is empty')
-        if not Room.objects.get(name=name):
-                return HttpResponse (f'Room {name} already exist')
+            message = 'Name field is empty'
+            return render(request, 'conference/error-page.html', context={'error_code':message})
+        for room in rooms:
+            if name == room:
+                message = f'Name {name} already exist'
+                return render(request, 'conference/error-page.html', context={'error_code':message})
 
-        # if not capacity.min < capacity < capacity.max:
-        #     return HttpResponse (f'Capacity must be between {capacity.min} - {capacity.max} ')
+        if capacity < 0:
+            message = 'Capacity must be bigger than 0'
+            return render(request, 'conference/error-page.html', context={'error_code': message})
+
         if projector_yes:
             choice = True
         elif projector_no:
             choice = False
         else:
-            return HttpResponse ('You must select projector choice')
+            message = 'You must select projectof choice'
+            return render(request, 'conference/error-page.html', context={'error_code': message})
+
         Room.objects.create(name=name, capacity=capacity, projector=choice)
         return HttpResponseRedirect(reverse('rooms'))
 

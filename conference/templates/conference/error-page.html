@@ -9,17 +9,17 @@
 <body background="background.jpg">
 <table align="center" width="55%">
     <thead><td bgcolor="#deb887" colspan="2">
-            <h1 align="center">Conference Rooms</h1>
+            <h1 align="center">Error!</h1>
     </td> </thead>
     <tr bgcolor="#d2b48c">
-        <td align="center"><h3>List of rooms</h3></td>
-        <td align="center"><h3>Create room</h3></td>
+        <td align="center" colspan="2"><h3>{% error_code %}</h3></td>
     </tr>
-    {% for room in rooms %}
     <tr bgcolor="#d2b48c">
-        <td align="center" colspan="2"><h5>{{ room.name }} {{ room.capacity }} {{ room.projector }}</h5></td>
+        <form action="new_room" method="get">
+            <td></td>
+            <td><button type="submit">Back</button> </td>
+        </form>
     </tr>
-    {% endfor %}
 </table>
 </body>
 <div id="footer" align="center">
