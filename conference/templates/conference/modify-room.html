@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conference Rooms</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body background="background.jpg">
+<table align="center" width="55%">
+    <thead><td bgcolor="#deb887" colspan="2">
+            <h1 align="center">Conference Rooms</h1>
+    </td> </thead>
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h3>List of rooms</h3></td>
+        <td align="center"><h3>Create room</h3></td>
+    </tr>
+    <form action=" " method="post">
+    {% csrf_token %}
+        {%   for room in rooms %}
+        <tr bgcolor="#d2b48c">
+            <td align="center"><h5></h5></td>
+            <td align="center"><h5>New value</h5></td>
+        </tr>
+        <tr bgcolor="#d2b48c">
+            <td align="center"><h6>Name (old name: {{ room.name }} </h6></td>
+            <td align="center"><h5><input type="text" maxlength="255" name="new_name"></h5></td>
+        </tr>
+        <tr bgcolor="#d2b48c">
+            <td align="center"><h6>Capacity (old capacity: {{ room.capacity }} </h6></td>
+            <td align="center"><h5><input type="number" min="10" max="150" name="new_capacity"></h5></td>
+        </tr>
+        <tr bgcolor="#d2b48c">
+            <td align="center"><h6>Projector: {{ room.projector }} </h6></td>
+            <td align="center"><input type="checkbox" id="Yes" name="projector_yes">
+                <label for="Yes">Yes</label>
+                <input type="checkbox" id="No" name="projector_no">
+                <label for="No">No</label></td>
+        </tr>
+
+        {% endfor %}
+    </form>
+</table>
+</body>
+<div id="footer" align="center">
+    Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
+</div>
+</html>
