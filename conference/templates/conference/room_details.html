@@ -11,10 +11,11 @@
     <thead><td bgcolor="#deb887" colspan="2">
             <h1 align="center">Conference Rooms</h1>
     </td> </thead>
-    <tr bgcolor="#d2b48c">
-        <td align="center" colspan="2"><h3>Room {{ rooms.name }} details</h3></td>
-    </tr>
     {% for room in rooms %}
+    <tr bgcolor="#d2b48c">
+        <td align="center" colspan="2"><h3>Room {{ room.name }} details</h3></td>
+    </tr>
+
     <tr bgcolor="#d2b48c">
         <td align="center"><h5>Room name</h5></td>
         <td align="center" ><h5>{{ room.name }}</h5></td>
@@ -32,7 +33,7 @@
         <td><h5>Booking</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <td align="center" colspan="4"><form action="/room/modify/{{ room.id }}" method="get">
+        <td align="center"  colspan="4"><form action="/room/modify/{{ room.id }}" method="get">
             <button type="submit">Edit</button>
         </form>
         <form action="/room/delete/{{ room.id }}" method="get">
@@ -41,7 +42,7 @@
         <form action="/room/book/{{ room.id }}" method="get">
             <button type="submit">Book</button>
         </form>
-        <form action="/rooms" method="get">
+        <form action="/index" method="get">
             <button type="submit">Back</button>
         </form></td>
     </tr>

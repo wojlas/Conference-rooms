@@ -23,7 +23,15 @@ class NewRoom(View):
         capacity = request.POST.get('room_capacity')
         projector_yes = request.POST.get('projector_yes')
         projector_no = request.POST.get('projector_no')
-        if not name or capacity or projector_yes or projector_no:
+
+        if projector_yes:
+            choice = True
+        elif projector_no:
+            choice = False
+        else:
+            message = 'You must select projector choice'
+            return render(request, 'conference/error-page.html', context={'error_code': message})
+        if not (name or capacity or choice):
             message = 'Some field is empty'
             return render(request, 'conference/error-page.html', context={'error_code': message})
         if name in Room.objects.all():
@@ -33,13 +41,7 @@ class NewRoom(View):
             message = 'Capacity must be bigger than 0'
             return render(request, 'conference/error-page.html', context={'error_code': message})
 
-        if projector_yes:
-            choice = True
-        elif projector_no:
-            choice = False
-        else:
-            message = 'You must select projectof choice'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
+
 
         Room.objects.create(name=name, capacity=capacity, projector=choice)
         return HttpResponseRedirect(reverse('rooms'))
@@ -54,7 +56,7 @@ class DeleteRoom(View):
 
 class ModifyRoom(View):
     def get(self, request, id):
-        room = Room.objects.get(pk=id)
+        room = Room.objects.filter(pk=id)
         return render(request, 'conference/modify-room.html', context={'rooms': room})
 
     def post(self, request, id):
@@ -64,12 +66,6 @@ class ModifyRoom(View):
         projector_no = request.POST.get('projector_no')
         room = Room.objects.get(pk=id)
 
-        if not new_name or new_cap or projector_yes or projector_no:
-            message = 'Some field is empty'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
-        if new_name == room.name:
-            message = 'Name already exist'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
         if projector_yes:
             choice = True
         elif projector_no:
@@ -77,6 +73,13 @@ class ModifyRoom(View):
         else:
             message = 'You must select projectof choice'
             return render(request, 'conference/error-page.html', context={'error_code': message})
+        if not new_name or new_cap or choice:
+            message = 'Some field is empty'
+            return render(request, 'conference/error-page.html', context={'error_code': message})
+        if new_name == room.name:
+            message = 'Name already exist'
+            return render(request, 'conference/error-page.html', context={'error_code': message})
+
         for name in Room.objects.all():
             if new_name == name.name:
                 message = 'New name already exist in base'

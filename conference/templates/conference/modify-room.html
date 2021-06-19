@@ -19,15 +19,11 @@
     {% csrf_token %}
         {%   for room in rooms %}
         <tr bgcolor="#d2b48c">
-            <td align="center"><h5></h5></td>
-            <td align="center"><h5>New value</h5></td>
-        </tr>
-        <tr bgcolor="#d2b48c">
             <td align="center"><h6>Name (old name: {{ room.name }} </h6></td>
             <td align="center"><h5><input type="text" maxlength="255" name="new_name"></h5></td>
         </tr>
         <tr bgcolor="#d2b48c">
-            <td align="center"><h6>Capacity (old capacity: {{ room.capacity }} </h6></td>
+            <td align="center"><h6>Capacity (old capacity: {{ room.capacity }})</h6></td>
             <td align="center"><h5><input type="number" min="10" max="150" name="new_capacity"></h5></td>
         </tr>
         <tr bgcolor="#d2b48c">
@@ -36,6 +32,10 @@
                 <label for="Yes">Yes</label>
                 <input type="checkbox" id="No" name="projector_no">
                 <label for="No">No</label></td>
+        </tr>
+        <tr bgcolor="#d2b48c">
+            <td></td>
+            <td align="center"><button type="submit">Edit</button> </td>
         </tr>
 
         {% endfor %}
