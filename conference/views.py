@@ -1,16 +1,36 @@
-from django.http import HttpResponseRedirect
+from datetime import datetime
+
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse
 from django.views import View
 
-from conference.models import Room
+from conference.models import Room, Book
 
 
 class RoomList(View):
     def get(self, request):
         rooms = Room.objects.order_by('capacity')
         return render(request, 'conference/index.html', context={'rooms': rooms})
+
+    def post(self, request):
+        rooms = Room.objects.order_by('capacity')
+        date = request.POST.get('date_choice')
+        format_date = datetime.strptime(date, '%Y-%m-%d')
+        date_int = int(format_date.strftime('%Y%m%d'))
+        is_book = Book.objects.get(date=date)
+        if date_int == is_book.date:
+            available = 'Busy'
+        elif date_int != is_book.date:
+            available = 'Free'
+        else:
+            url = '/index'
+            return render(request, 'conference/error-page.html',
+                          context={'error_code': 'The date must be set', 'url': url})
+
+        return render(request, 'conference/index.html', context={'rooms':rooms, 'available':available})
+
 
 
 class NewRoom(View):
@@ -41,15 +61,13 @@ class NewRoom(View):
             message = 'Capacity must be bigger than 0'
             return render(request, 'conference/error-page.html', context={'error_code': message})
 
-
-
         Room.objects.create(name=name, capacity=capacity, projector=choice)
         return HttpResponseRedirect(reverse('rooms'))
 
 
 class DeleteRoom(View):
     def get(self, request, id):
-        room = Room.objects.get(pk=int(id))
+        room = Room.objects.get(pk=id)
         room.delete()
         return HttpResponseRedirect(reverse('rooms'))
 
@@ -89,9 +107,48 @@ class ModifyRoom(View):
             room.name = str(new_name)
             room.capacity = int(new_cap)
             room.projector = choice
-            return HttpResponseRedirect (reverse('rooms'))
+            return HttpResponseRedirect(reverse('rooms'))
+
 
 class RoomDetails(View):
     def get(self, request, id):
         room = Room.objects.filter(pk=id)
-        return render(request, 'conference/room_details.html', context={'rooms':room})
+        return render(request, 'conference/room_details.html', context={'rooms': room})
+
+
+class ReserveRoom(View):
+    def get(self, request, id):
+        room = Room.objects.filter(pk=id)
+        return render(request, 'conference/reserve-room.html', context={'room': room})
+
+    def post(self, request, id):
+        try:
+            date_now = datetime.today()
+            date_now_int = int(date_now.strftime('%Y%m%d'))
+            room = Room.objects.get(pk=id)
+            comment = request.POST.get('comment')
+            date = request.POST.get('date')
+            format_date = datetime.strptime(date, '%Y-%m-%d')
+            date_int = int(format_date.strftime('%Y%m%d'))
+
+            # if format_date in room.date:
+            #     message = 'Room is busy'
+            #     return render(request, 'conference/error-page.html', context={'error_code': message})
+            if date_int < date_now_int:
+                message = 'Wrong date'
+                url = f'/room/reserve/{id}'
+                return render(request, 'conference/error-page.html', context={'error_code': message, 'url':url})
+            if comment == ' ':
+                message = 'Comment is empty'
+                url = f'/room/reserve/{id}'
+                return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
+            Book.objects.create(date=format_date, room_id=room.id ,comment=comment)
+            return HttpResponseRedirect (reverse('rooms'))
+        except AttributeError as e:
+            url = f'/room/reserve/{id}'
+            return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
+        except ValueError as e:
+            return HttpResponse (e)
+            url = f'/room/reserve/{id}'
+            # return render(request, 'conference/error-page.html',
+            #               context={'error_code': 'The date must be set', 'url': url})

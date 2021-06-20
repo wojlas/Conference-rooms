@@ -7,7 +7,7 @@
 </head>
 
 <body background="background.jpg">
-<table align="center" width="55%">
+<table align="center" width="75%">
     <thead><td bgcolor="#deb887" colspan="2">
             <h1 align="center">Error!</h1>
     </td> </thead>
@@ -15,7 +15,7 @@
         <td align="center" colspan="2"><h3>{{ error_code }}</h3></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <form action="/room/new" method="get">
+        <form action="{{ url }}" method="get">
             <td></td>
             <td align="right"><button type="submit">Back</button> </td>
         </form>

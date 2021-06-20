@@ -33,13 +33,13 @@
         <td><h5>Booking</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <td align="center"  colspan="4"><form action="/room/modify/{{ room.id }}" method="get">
+        <td align="center"  colspan="4" ><form action="/room/modify/{{ room.id }}" method="get">
             <button type="submit">Edit</button>
         </form>
         <form action="/room/delete/{{ room.id }}" method="get">
             <button type="submit">Delete</button>
         </form>
-        <form action="/room/book/{{ room.id }}" method="get">
+        <form action="/room/reserve/{{ room.id }}" method="get">
             <button type="submit">Book</button>
         </form>
         <form action="/index" method="get">
