@@ -17,19 +17,17 @@ class RoomList(View):
     def post(self, request):
         rooms = Room.objects.order_by('capacity')
         date = request.POST.get('date_choice')
-        format_date = datetime.strptime(date, '%Y-%m-%d')
-        date_int = int(format_date.strftime('%Y%m%d'))
-        is_book = Book.objects.get(date=date)
-        if date_int == is_book.date:
-            available = 'Busy'
-        elif date_int != is_book.date:
-            available = 'Free'
-        else:
-            url = '/index'
-            return render(request, 'conference/error-page.html',
-                          context={'error_code': 'The date must be set', 'url': url})
+        all_rooms = Room.objects.all()
+        for room in all_rooms:
+            for room in Book.objects.all():
+                book_date = str(room.date)
+                format_date = datetime.strptime(book_date, '%Y-%m-%d').date()
+                date_int = int(format_date.strftime('%Y-%m-%d'))
+            all_rooms.reserved = datetime.date(date) in format_date
 
-        return render(request, 'conference/index.html', context={'rooms':rooms, 'available':available})
+
+        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':date})
+
 
 
 
@@ -91,9 +89,9 @@ class ModifyRoom(View):
         else:
             message = 'You must select projectof choice'
             return render(request, 'conference/error-page.html', context={'error_code': message})
-        if not new_name or new_cap or choice:
-            message = 'Some field is empty'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
+        # if not new_name or new_cap or choice:
+        #     message = 'Some field is empty'
+        #     return render(request, 'conference/error-page.html', context={'error_code': message})
         if new_name == room.name:
             message = 'Name already exist'
             return render(request, 'conference/error-page.html', context={'error_code': message})
@@ -131,7 +129,7 @@ class ReserveRoom(View):
             format_date = datetime.strptime(date, '%Y-%m-%d')
             date_int = int(format_date.strftime('%Y%m%d'))
 
-            # if format_date in room.date:
+            # if format_date in Book.date:
             #     message = 'Room is busy'
             #     return render(request, 'conference/error-page.html', context={'error_code': message})
             if date_int < date_now_int:
@@ -142,13 +140,13 @@ class ReserveRoom(View):
                 message = 'Comment is empty'
                 url = f'/room/reserve/{id}'
                 return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
-            Book.objects.create(date=format_date, room_id=room.id ,comment=comment)
+            Book.objects.create(date=date_int, room_id_id=room.id ,comment=comment)
             return HttpResponseRedirect (reverse('rooms'))
         except AttributeError as e:
+            return HttpResponse(e)
+            # url = f'/room/reserve/{id}'
+            # return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
+        except ValueError:
             url = f'/room/reserve/{id}'
-            return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
-        except ValueError as e:
-            return HttpResponse (e)
-            url = f'/room/reserve/{id}'
-            # return render(request, 'conference/error-page.html',
-            #               context={'error_code': 'The date must be set', 'url': url})
+            return render(request, 'conference/error-page.html',
+                          context={'error_code': 'The date must be set', 'url': url})

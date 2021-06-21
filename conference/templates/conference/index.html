@@ -2,12 +2,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
     <meta charset="UTF-8">
     <title>Conference Rooms</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 
-<body background= "background.jpg"%}>
+{% load static %}
+<body background="{% static 'static/background.jpg' %}">
 <table align="center" width="75%">
     <thead><td bgcolor="#deb887" colspan="7">
             <h1 align="center">Conference Rooms</h1>
@@ -15,16 +25,20 @@
     <tr bgcolor="#d2b48c">
         <form action=" " method="post">
             {%  csrf_token %}
-        <td align="center">Check available: <input type="date" name="date_choice"> <button type="submit">Ok</button> </td>
+        <td align="center">Check available: <input type="date" name="date_choice"> <button type="submit">Ok</button> <br> {{ date }}</td>
         <td align="center" colspan="3" ><h3>List of rooms</h3></td>
-        <td align="center" colspan="3"><h3>Create room</h3></td>
+        <td align="center" colspan="3"><h3><a href="{% url 'new_room' %}">Create room</a></h3></td>
         </form>
     </tr>
     {% for room in rooms %}
     <tr bgcolor="#d2b48c">
         <td align="center"><h5><a href="{% url 'details' room.id %}"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
-        <td align="center"><h5>{{ available }}</h5></td>
+        {% if room.booked %}
+            <td align="center"><h5> Busy </h5></td>
+        {% else %}
+            <td align="center"><h5> Free</h5></td>
+        {% endif %}
         <td align="center"><h5>{{ room.projector }}</h5></td>
         <td align="center"><h5><form action="room/reserve/{{ room.id }}" method="get">
             <button type="submit">Book</button>
@@ -38,7 +52,7 @@
     {% endfor %}
 </table>
 </body>
-<div id="footer" align="center">
+<footer>
     Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
-</div>
+</footer>
 </html>
