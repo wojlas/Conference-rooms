@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -12,21 +12,16 @@ from conference.models import Room, Book
 class RoomList(View):
     def get(self, request):
         rooms = Room.objects.order_by('capacity')
-        return render(request, 'conference/index.html', context={'rooms': rooms})
-
-    def post(self, request):
-        rooms = Room.objects.order_by('capacity')
-        date = request.POST.get('date_choice')
+        date = datetime.date.today()
+        formated_today = date.strftime('%Y-%m-%d')
         all_rooms = Room.objects.all()
         for room in all_rooms:
-            for room in Book.objects.all():
-                book_date = str(room.date)
-                format_date = datetime.strptime(book_date, '%Y-%m-%d').date()
-                date_int = int(format_date.strftime('%Y-%m-%d'))
-            all_rooms.reserved = datetime.date(date) in format_date
+            dates = [book.date for book in Book.objects.all()]
+            # dates = list(Book.objects.extra(select={'date':"to_char(conference_book.date, 'YYYY-MM-DD hh:mi')"}).values_list('date', flat='true'))
+            room.reserved = date in dates
 
 
-        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':date})
+        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':formated_today})
 
 
 
@@ -111,6 +106,11 @@ class ModifyRoom(View):
 class RoomDetails(View):
     def get(self, request, id):
         room = Room.objects.filter(pk=id)
+        booking = Book.objects.filter(room_id=id)
+        for book in booking:
+            # if str(book.date) > str(datetime.date.today()):
+            room.reserved = book.date.strftime('%Y-%m-%d')
+
         return render(request, 'conference/room_details.html', context={'rooms': room})
 
 
@@ -121,18 +121,18 @@ class ReserveRoom(View):
 
     def post(self, request, id):
         try:
-            date_now = datetime.today()
+            date_now = datetime.date.today()
             date_now_int = int(date_now.strftime('%Y%m%d'))
             room = Room.objects.get(pk=id)
             comment = request.POST.get('comment')
             date = request.POST.get('date')
-            format_date = datetime.strptime(date, '%Y-%m-%d')
-            date_int = int(format_date.strftime('%Y%m%d'))
+            # format_date = datetime.strptime(date, '%Y-%m-%d')
+            # date_int = int(format_date.strftime('%Y%m%d'))
 
-            # if format_date in Book.date:
-            #     message = 'Room is busy'
-            #     return render(request, 'conference/error-page.html', context={'error_code': message})
-            if date_int < date_now_int:
+            if Book.objects.filter(date=date, room_id=room):
+                url = f'room/reserve/{id}'
+                return render(request, 'conference/error-page.html', {'error_code':'Room is booked', 'url':url})
+            if date < str(date_now):
                 message = 'Wrong date'
                 url = f'/room/reserve/{id}'
                 return render(request, 'conference/error-page.html', context={'error_code': message, 'url':url})
@@ -140,12 +140,11 @@ class ReserveRoom(View):
                 message = 'Comment is empty'
                 url = f'/room/reserve/{id}'
                 return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
-            Book.objects.create(date=date_int, room_id_id=room.id ,comment=comment)
+            Book.objects.create(date=date, room_id_id=room.id ,comment=comment)
             return HttpResponseRedirect (reverse('rooms'))
-        except AttributeError as e:
-            return HttpResponse(e)
-            # url = f'/room/reserve/{id}'
-            # return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
+        except AttributeError:
+            url = f'/room/reserve/{id}'
+            return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
         except ValueError:
             url = f'/room/reserve/{id}'
             return render(request, 'conference/error-page.html',

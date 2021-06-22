@@ -25,7 +25,7 @@
     <tr bgcolor="#d2b48c">
         <form action=" " method="post">
             {%  csrf_token %}
-        <td align="center">Check available: <input type="date" name="date_choice"> <button type="submit">Ok</button> <br> {{ date }}</td>
+        <td align="center"> {{ date }}</td>
         <td align="center" colspan="3" ><h3>List of rooms</h3></td>
         <td align="center" colspan="3"><h3><a href="{% url 'new_room' %}">Create room</a></h3></td>
         </form>
@@ -34,10 +34,10 @@
     <tr bgcolor="#d2b48c">
         <td align="center"><h5><a href="{% url 'details' room.id %}"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
-        {% if room.booked %}
-            <td align="center"><h5> Busy </h5></td>
+        {% if room.reserved %}
+        <td align="center"><h5> Busy </h5></td>
         {% else %}
-            <td align="center"><h5> Free</h5></td>
+        <td align="center"><h5> Free</h5></td>
         {% endif %}
         <td align="center"><h5>{{ room.projector }}</h5></td>
         <td align="center"><h5><form action="room/reserve/{{ room.id }}" method="get">

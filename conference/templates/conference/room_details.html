@@ -29,8 +29,7 @@
         <td align="center" ><h5>{{ room.projector }}</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <td><h5>Booking</h5></td>
-        <td><h5>Booking</h5></td>
+        <td colspan="2" align="center"><h5>Future booking: <br> {{ room.reserved }}</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
         <td align="center"  colspan="4" ><form action="/room/modify/{{ room.id }}" method="get">
