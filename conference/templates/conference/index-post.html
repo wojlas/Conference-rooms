@@ -32,19 +32,22 @@
         <td align="center" colspan="3"><h3><a href="{% url 'search' %}">Search</a></h3></td>
     </tr>
     <tr bgcolor="#d2b48c">
+
             {%  csrf_token %}
             <td align="center"><h3> Rooms: </h3></td>
         <td align="center" colspan="1" ><h3>Capacity</h3></td>
         <td align="center" colspan="1" ><h3>Available</h3></td>
+        {%  csrf_token %}
         <td align="center" colspan="1" ><h3>Projector</h3></td>
-        <td align="center" colspan="3" ><h3><form action=" " method="post">
-            {%  csrf_token %}<button type="submit">Show only free rooms</button> </form> </h3></td>
+        <td align="center" colspan="3" ><h3><form action=" " method="get"><button type="submit">Show all rooms</button> </form> </h3></td>
+
     </tr>
     {% for room in rooms %}
+
     <tr bgcolor="#d2b48c">
         <td align="center"><h5><a href="{% url 'details' room.id %}"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
-        {% if all_dates == room.id %}
+        {% if room.reserved %}
         <td align="center"><h5> Busy </h5></td>
         {% else %}
         <td align="center"><h5> Free </h5></td>
@@ -63,6 +66,7 @@
         <td align="center"><h5><form action="room/delete/{{ room.id }}" method="get">
             <button type="submit">Delete</button>
         </form> </h5></td>
+
     {% endfor %}
 </table>
 </body>

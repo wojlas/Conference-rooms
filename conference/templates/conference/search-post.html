@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
+    <meta charset="UTF-8">
+    <title>Conference Rooms - search</title>
+</head>
+
+<body background="background.jpg">
+<table align="center" width="55%">
+    <thead><td bgcolor="#deb887" colspan="4">
+            <h1 align="center">Conference Rooms</h1>
+    </td> </thead>
+    <tr bgcolor="#d2b48c">
+        <td align="center" colspan="4"><h3>Results:</h3></td>
+    </tr>
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h5>Name</h5></td>
+        <td align="center"><h5>Capacity</h5></td>
+        <td align="center"><h5>Projector</h5></td>
+        <td align="center"><h5>Future reservation</h5></td>
+    </tr>
+    {% for room in rooms %}
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h5>{{ room.name }}</h5></td>
+        <td align="center"><h5>{{ room.capacity }}</h5></td>
+        {% if room.projector == True %}
+        <td align="center"><h5>Yes</h5></td>
+        {% else %}
+        <td align="center"><h5>No</h5></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    <tr bgcolor="#d2b48c">
+        <td align="center" colspan="4">
+            <form action="/search" method="get"><button type="submit">Search again</button> </form>
+            <form action="/index" method="get"><button type="submit">Back</button> </form>
+        </td>
+    </tr>
+</table>
+</body>
+<footer>
+    Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
+</footer>
+</html>

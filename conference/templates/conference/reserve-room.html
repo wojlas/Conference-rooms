@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
     <meta charset="UTF-8">
-    <title>Conference Rooms</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Conference Rooms - reserve</title>
 </head>
 
 <body background="background.jpg">
@@ -23,14 +32,14 @@
         <td align="center" colspan="1"><h5><input type="text" maxlength="125" size="30" name="comment"><br>Enter a comment</h5></td>
         <td align="center" colspan="1"><h5><input type="date" name="date"></h5></td></tr>
     <tr bgcolor="#d2b48c">
-        <td></td>
+        <td align="center"><h5>Future booking: <br> {{ booking}}</h5></td>
         <td style="white-space: nowrap" align="right"> <button type="submit">Book</button>
         </form>
             <form action="/index" method="get"><button type="submit">Back</button> </form></td>
     </tr>
 </table>
 </body>
-<div id="footer" align="center">
+<footer>
     Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
-</div>
+</footer>
 </html>

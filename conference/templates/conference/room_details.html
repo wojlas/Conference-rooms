@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
     <meta charset="UTF-8">
-    <title>Conference Rooms</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Conference Rooms - details</title>
 </head>
 
 <body background="background.jpg">
@@ -29,10 +38,10 @@
         <td align="center" ><h5>{{ room.projector }}</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <td colspan="2" align="center"><h5>Future booking: <br> {{ room.reserved }}</h5></td>
+        <td colspan="2" align="center"><h5>Future booking: <br> {{ booking}}</h5></td>
     </tr>
     <tr bgcolor="#d2b48c">
-        <td align="center"  colspan="4" ><form action="/room/modify/{{ room.id }}" method="get">
+        <td align="center"  colspan="4" class="floated"><form action="/room/modify/{{ room.id }}" method="get">
             <button type="submit">Edit</button>
         </form>
         <form action="/room/delete/{{ room.id }}" method="get">
@@ -48,7 +57,7 @@
     {% endfor %}
 </table>
 </body>
-<div id="footer" align="center">
+<footer>
     Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
-</div>
+</footer>
 </html>

@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from conference.views import NewRoom, RoomList, DeleteRoom, ModifyRoom, RoomDetails, ReserveRoom
+from conference.views import NewRoom, RoomList, DeleteRoom, ModifyRoom, RoomDetails, ReserveRoom, SearchRoom
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('room/modify/<int:id>', ModifyRoom.as_view(), name='modify_room'),
     path('room/details/<int:id>', RoomDetails.as_view(), name='details'),
     path('room/reserve/<int:id>', ReserveRoom.as_view(), name='reserve'),
+    path('search', SearchRoom.as_view(), name='search')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
     <meta charset="UTF-8">
     <title>Conference Rooms</title>
     <link rel="stylesheet" href="style.css">
@@ -9,7 +19,7 @@
 <body background="background.jpg">
 <table align="center" width="55%">
     <thead><td bgcolor="#deb887" colspan="2">
-            <h1 align="center">Conference Rooms</h1>
+            <h1 align="center">Conference Rooms - modify</h1>
     </td> </thead>
     <tr bgcolor="#d2b48c">
         <td align="center"><h3>List of rooms</h3></td>
@@ -19,12 +29,12 @@
     {% csrf_token %}
         {%   for room in rooms %}
         <tr bgcolor="#d2b48c">
-            <td align="center"><h6>Name (old name: {{ room.name }} </h6></td>
+            <td align="center"><h6>Name (old name: {{ room.name }} )</h6></td>
             <td align="center"><h5><input type="text" maxlength="255" name="new_name"></h5></td>
         </tr>
         <tr bgcolor="#d2b48c">
-            <td align="center"><h6>Capacity (old capacity: {{ room.capacity }})</h6></td>
-            <td align="center"><h5><input type="number" min="10" max="150" name="new_capacity"></h5></td>
+            <td align="center"><h6>Capacity (old capacity: {{ room.capacity }} )</h6></td>
+            <td align="center"><h5><input type="number" min="10" max="150" step="5" name="new_capacity"></h5></td>
         </tr>
         <tr bgcolor="#d2b48c">
             <td align="center"><h6>Projector: {{ room.projector }} </h6></td>
@@ -35,14 +45,16 @@
         </tr>
         <tr bgcolor="#d2b48c">
             <td></td>
-            <td align="center"><button type="submit">Edit</button> </td>
+            <td align="center"><button type="submit">Edit</button></form>
+            <form action="/index" method="get"><button type="submit">Back</button>
+         </td>
         </tr>
 
         {% endfor %}
     </form>
 </table>
 </body>
-<div id="footer" align="center">
+<footer>
     Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
-</div>
+</footer>
 </html>

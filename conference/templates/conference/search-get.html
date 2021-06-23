@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        footer {
+		position:absolute;
+		bottom:0;
+		width:99.6%;
+		height:30px;		/* Wysokość nagłówka */
+		background:#CD7F32;
+        text-align: center;
+	}
+    </style>
+    <meta charset="UTF-8">
+    <title>Conference Rooms - search</title>
+</head>
+
+<body background="/static/background.jpg">
+<table align="center" width="55%">
+    <thead><td bgcolor="#deb887" colspan="2">
+            <h1 align="center">Conference Rooms</h1>
+    </td> </thead>
+    <tr bgcolor="#d2b48c">
+        <td align="center" colspan="2"><h3>Search free rooms</h3></td>
+    </tr>
+    <form action=" " method="post">
+        {% csrf_token %}
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h5> Name: </h5></td>
+        <td align="center"> <input type="text" maxlength="125" name="name"></td>
+    </tr>
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h5> Capacity: </h5></td>
+        <td align="center"> Min: <input type="number" min="10" max="150" step="5" name="cap_min">
+                            Max: <input type="number" min="10" max="150" step="5" name="cap_max"></td>
+    </tr>
+    <tr bgcolor="#d2b48c">
+        <td align="center"><h5> Projector: </h5></td>
+        <td align="center"><input type="checkbox" id="Yes" name="projector_yes">
+                <label for="Yes">Yes</label>
+                <input type="checkbox" id="No" name="projector_no">
+                <label for="No">No</label></td>
+    </tr>
+    <tr bgcolor="#d2b48c">
+        <td></td>
+        <td align="center"><button type="submit">Search</button></form>
+    <form action="/index" method="get"><button type="submit">Back</button> </form></td>
+
+</table>
+</body>
+<footer>
+    Author: Wojciech Łaska email:wojlas93@gmail.com All rights reserved
+</footer>
+</html>
