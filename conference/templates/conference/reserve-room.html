@@ -7,7 +7,7 @@
 		bottom:0;
 		width:99.6%;
 		height:30px;		/* Wysokość nagłówka */
-		background:#CD7F32;
+		background:#808080;
         text-align: center;
 	}
     </style>
@@ -23,10 +23,6 @@
             <h1 align="center">Book room {{ room.name }}</h1>
         {% endfor %}
     </td> </thead>
-    <tr bgcolor="#d2b48c">
-        <td align="center"><h3>List of rooms</h3></td>
-        <td align="center"><h3>Create room</h3></td>
-    </tr>
     <form action=" " method="post">
         {% csrf_token %}
     <tr bgcolor="#d2b48c">

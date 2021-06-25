@@ -4,7 +4,7 @@ from django.db import models
 class Room(models.Model):
     name = models.CharField(max_length=255, unique=True)
     capacity = models.IntegerField()
-    projector = models.BooleanField()
+    projector = models.BooleanField(default=True)
 
 class Book(models.Model):
     date = models.DateTimeField(null=True)

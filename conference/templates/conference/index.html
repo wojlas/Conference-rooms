@@ -17,7 +17,7 @@
 		bottom:0;
 		width:99.6%;
 		height:30px;		/* Wysokość nagłówka */
-		background:#CD7F32;
+		background:#808080;
         text-align: center;
 	}
     </style>
@@ -31,14 +31,14 @@
     <thead><td bgcolor="#deb887" colspan="7">
             <h1 align="center">Conference Rooms</h1>
     </td> </thead>
-    <tr bgcolor="#d2b48c">
+    <tr bgcolor="gray">
         <td align="center" colspan="1"><h3> {{ date }} </h3></td>
         <td align="center" colspan="3"><h3><a href="{% url 'new_room' %}" style="text-decoration:none">Create room</a></h3></td>
         <td align="center" colspan="3"><h3><a href="{% url 'search' %}" style="text-decoration:none">Search</a></h3></td>
     </tr>
-    <tr bgcolor="#d2b48c">
+    <tr bgcolor="#d3d3d3">
             {%  csrf_token %}
-            <td align="center"><h3> Rooms: </h3></td>
+            <td align="center"><h3> Rooms </h3></td>
         <td align="center" colspan="1" ><h3>Capacity</h3></td>
         <td align="center" colspan="1" ><h3>Available</h3></td>
         <td align="center" colspan="1" ><h3>Projector</h3></td>
@@ -50,9 +50,9 @@
         <td align="center"><h5><a href="{% url 'details' room.id %}" style="text-decoration:none"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
         {% if room.id in all_dates %}
-        <td align="center"><h5> Busy </h5></td>
+        <td align="center"><h5> Not Available </h5></td>
         {% else %}
-        <td align="center"><h5> Free </h5></td>
+        <td align="center"><h5> Available </h5></td>
         {% endif %}
         {% if room.projector == True %}
         <td align="center"><h5>Yes</h5></td>

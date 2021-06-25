@@ -48,25 +48,26 @@ class NewRoom(View):
         projector_yes = request.POST.get('projector_yes')
         projector_no = request.POST.get('projector_no')
 
-        if projector_yes:
-            choice = True
-        elif projector_no:
-            choice = False
-        else:
+        if not name or not capacity:
             message = 'Some field is empty'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
-        if not name or not capacity or not choice:
-            message = 'Some field is empty'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
-        if name in Room.objects.all():
-            message = f'Name {name} already exist'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
+            return render(request, 'conference/error-page.html', context={'error_code': message, 'url':'/room/new'})
+        for room in Room.objects.all():
+            if name in room.name:
+                message = f'Room {name} already exist'
+                return render(request, 'conference/error-page.html', context={'error_code': message, 'url':'/room/new'})
         if int(capacity) < 0:
             message = 'Capacity must be bigger than 0'
-            return render(request, 'conference/error-page.html', context={'error_code': message})
+            return render(request, 'conference/error-page.html', context={'error_code': message, 'url':'/room/new'})
+        if projector_yes:
+            Room.objects.create(name=name, capacity=capacity, projector=True)
+        elif projector_no:
+            Room.objects.create(name=name, capacity=capacity, projector=False)
+        else:
+            message = 'Some field is empty'
+            return render(request, 'conference/error-page.html', context={'error_code': message, 'url':'/room/new'})
 
-        Room.objects.create(name=name, capacity=capacity, projector=choice)
         return HttpResponseRedirect(reverse('rooms'))
+
 
 
 class DeleteRoom(View):
