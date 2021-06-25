@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 # Create your views here.
@@ -52,9 +53,9 @@ class NewRoom(View):
         elif projector_no:
             choice = False
         else:
-            message = 'You must select projector choice'
+            message = 'Some field is empty'
             return render(request, 'conference/error-page.html', context={'error_code': message})
-        if not (name or capacity or choice):
+        if not name or not capacity or not choice:
             message = 'Some field is empty'
             return render(request, 'conference/error-page.html', context={'error_code': message})
         if name in Room.objects.all():
@@ -93,7 +94,7 @@ class ModifyRoom(View):
             elif projector_no:
                 choice = False
             else:
-                message = 'You must select projectof choice'
+                message = 'Some field is empty'
                 return render(request, 'conference/error-page.html', context={'error_code': message})
 
             if not new_name:
@@ -155,6 +156,10 @@ class ReserveRoom(View):
             room = Room.objects.get(pk=id)
             comment = request.POST.get('comment')
             date = request.POST.get('date')
+            if comment == False:
+                message = 'Comment is empty'
+                url = f'/room/reserve/{id}'
+                return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
 
             if Book.objects.filter(date=date, room_id=room):
                 url = f'/room/reserve/{id}'
@@ -163,10 +168,7 @@ class ReserveRoom(View):
                 message = 'Wrong date'
                 url = f'/room/reserve/{id}'
                 return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
-            if comment == ' ':
-                message = 'Comment is empty'
-                url = f'/room/reserve/{id}'
-                return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
+
             Book.objects.create(date=date, room_id_id=room.id, comment=comment)
             return HttpResponseRedirect(reverse('rooms'))
         except AttributeError:
@@ -177,6 +179,10 @@ class ReserveRoom(View):
             url = f'/room/reserve/{id}'
             return render(request, 'conference/error-page.html',
                           context={'error_code': 'The date must be set', 'url': url})
+        except ValidationError:
+            return render(request, 'conference/error-page.html',
+                          {'error_code': 'The date must be set', 'url': f'/room/reserve/{id}'})
+
 
 
 class SearchRoom(View):

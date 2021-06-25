@@ -15,8 +15,9 @@
     <title>Conference Rooms - search</title>
 </head>
 
-<body background="/static/background.jpg">
-<table align="center" width="55%">
+{% load static %}
+<body background="{% static 'conference/background.jpg' %}" alt="background_image">
+<table align="center" width="75%" cellspacing="0" border="1" class="table">
     <thead><td bgcolor="#deb887" colspan="2">
             <h1 align="center">Conference Rooms</h1>
     </td> </thead>

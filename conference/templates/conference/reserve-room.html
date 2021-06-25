@@ -15,8 +15,9 @@
     <title>Conference Rooms - reserve</title>
 </head>
 
-<body background="background.jpg">
-<table align="center" width="75%">
+{% load static %}
+<body background="{% static 'conference/background.jpg' %}" alt="background_image">
+<table align="center" width="75%" cellspacing="0" border="1" class="table">
     <thead><td bgcolor="#deb887" colspan="2">
         {% for room in room %}
             <h1 align="center">Book room {{ room.name }}</h1>
@@ -33,7 +34,7 @@
         <td align="center" colspan="1"><h5><input type="date" name="date"></h5></td></tr>
     <tr bgcolor="#d2b48c">
         <td align="center"><h5>Future booking: <br> {{ booking}}</h5></td>
-        <td style="white-space: nowrap" align="right"> <button type="submit">Book</button>
+        <td align="center"> <button type="submit">Book</button>
         </form>
             <form action="/index" method="get"><button type="submit">Back</button> </form></td>
     </tr>
