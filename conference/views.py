@@ -1,6 +1,6 @@
 import datetime
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse
@@ -17,11 +17,11 @@ class RoomList(View):
         all_rooms = Room.objects.all().order_by('capacity')
         ids = []
         for book in Book.objects.all():
-            if formated_today in  strftime(book.date, '%Y-%m-%d'):
+            if formated_today in strftime(book.date, '%Y-%m-%d'):
                 ids.append(book.room_id_id)
 
-
-        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':formated_today, 'all_dates':ids})
+        return render(request, 'conference/index.html',
+                      context={'rooms': all_rooms, 'date': formated_today, 'all_dates': ids})
 
     def post(self, request):
         date = datetime.date.today()
@@ -32,11 +32,8 @@ class RoomList(View):
             if formated_today in strftime(book.date, '%Y-%m-%d'):
                 ids.append(book.room_id_id)
 
-
-        return render(request, 'conference/index-post.html', context={'rooms': all_rooms, 'date': formated_today, 'all_dates':ids})
-
-
-
+        return render(request, 'conference/index-post.html',
+                      context={'rooms': all_rooms, 'date': formated_today, 'all_dates': ids})
 
 
 class NewRoom(View):
@@ -122,8 +119,7 @@ class ModifyRoom(View):
         except ValueError:
             url = 'room/modify/{{ room.id }}'
             message = 'Some field is empty'
-            return render(request, 'conference/error-page.html', context={'error_code': message, 'url':url})
-
+            return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
 
 
 class RoomDetails(View):
@@ -137,7 +133,7 @@ class RoomDetails(View):
             forbook.append(str(book.comment))
             booked.append(' '.join(forbook))
 
-        return render(request, 'conference/room_details.html', context={'rooms': room, 'booking':' | '.join(booked)})
+        return render(request, 'conference/room_details.html', context={'rooms': room, 'booking': ' | '.join(booked)})
 
 
 class ReserveRoom(View):
@@ -151,7 +147,7 @@ class ReserveRoom(View):
             forbook.append(str(book.comment))
             booked.append(' '.join(forbook))
 
-        return render(request, 'conference/reserve-room.html', context={'room': room, 'booking':' | '.join(booked)})
+        return render(request, 'conference/reserve-room.html', context={'room': room, 'booking': ' | '.join(booked)})
 
     def post(self, request, id):
         try:
@@ -162,24 +158,26 @@ class ReserveRoom(View):
 
             if Book.objects.filter(date=date, room_id=room):
                 url = f'/room/reserve/{id}'
-                return render(request, 'conference/error-page.html', {'error_code':'Room is booked', 'url':url})
+                return render(request, 'conference/error-page.html', {'error_code': 'Room is booked', 'url': url})
             if date < str(date_now):
                 message = 'Wrong date'
                 url = f'/room/reserve/{id}'
-                return render(request, 'conference/error-page.html', context={'error_code': message, 'url':url})
+                return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
             if comment == ' ':
                 message = 'Comment is empty'
                 url = f'/room/reserve/{id}'
                 return render(request, 'conference/error-page.html', context={'error_code': message, 'url': url})
-            Book.objects.create(date=date, room_id_id=room.id ,comment=comment)
-            return HttpResponseRedirect (reverse('rooms'))
+            Book.objects.create(date=date, room_id_id=room.id, comment=comment)
+            return HttpResponseRedirect(reverse('rooms'))
         except AttributeError:
             url = f'/room/reserve/{id}'
-            return render(request, 'conference/error-page.html', context={'error_code':'Room not in database', 'url':url})
+            return render(request, 'conference/error-page.html',
+                          context={'error_code': 'Room not in database', 'url': url})
         except ValueError:
             url = f'/room/reserve/{id}'
             return render(request, 'conference/error-page.html',
                           context={'error_code': 'The date must be set', 'url': url})
+
 
 class SearchRoom(View):
     def get(self, request):
@@ -191,16 +189,65 @@ class SearchRoom(View):
         cap_max = request.POST.get('cap_max')
         projector_yes = request.POST.get('projector_yes')
         projector_no = request.POST.get('projector_no')
-        if projector_yes:
-            choice = True
+
+        if name:
+            room = Room.objects.filter(name__contains=name)
+        elif name and cap_min:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min)
+        elif name and cap_max:
+            room = Room.objects.filter(name__contains=name, capacity__lte=cap_max)
+        elif name and cap_min and cap_max:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min, capacity__lte=cap_max)
+        elif name and cap_min and projector_yes:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min, projector=True)
+        elif name and cap_min and projector_no:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min, projector=False)
+        elif name and cap_max and projector_yes:
+            room = Room.objects.filter(name__contains=name, capacity__lte=cap_max, projector=True)
+        elif name and cap_max and projector_no:
+            room = Room.objects.filter(name__contains=name, capacity__lte=cap_max, projector=False)
+        elif name and cap_min and cap_max and projector_yes:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min, capacity__lte=cap_max,
+                                       projector=True)
+        elif name and cap_min and cap_max and projector_no:
+            room = Room.objects.filter(name__contains=name, capacity__gte=cap_min, capacity__lte=cap_max,
+                                       projector=False)
+        elif name and projector_no:
+            room = Room.objects.filter(name__contains=name, projector=False)
+        elif name and projector_yes:
+            room = Room.objects.filter(name__contains=name, projector=True)
+        elif cap_min:
+            room = Room.objects.filter(capacity__gte=cap_min)
+        elif cap_max:
+            room = Room.objects.filter(capacity__lte=cap_max)
+        elif cap_max and cap_min:
+            room = Room.objects.filter(capacity__gte=cap_min, capacity__lte=cap_max)
+        elif cap_min and projector_yes:
+            room = Room.objects.filter(capacity__gte=cap_min, projector=True)
+        elif cap_min and projector_no:
+            room = Room.objects.filter(capacity__gte=cap_min, projector=False)
+        elif cap_max and projector_yes:
+            room = Room.objects.filter(capacity__lte=cap_max, projector=True)
+        elif cap_max and projector_no:
+            room = Room.objects.filter(capacity__lte=cap_max, projector=False)
+        elif cap_max and cap_min and projector_yes:
+            room = Room.objects.filter(capacity__gte=cap_min, capacity__lte=cap_max, projector=True)
+        elif cap_max and cap_min and projector_no:
+            room = Room.objects.filter(capacity__gte=cap_min, capacity__lte=cap_max, projector=False)
         elif projector_no:
-            choice = False
+            room = Room.objects.filter(projector=False)
+        elif projector_yes:
+            room = Room.objects.filter(projector=True)
+        else:
+            url = f'/search'
+            return render(request, 'conference/error-page.html',
+                          context={'error_code': 'Fields are empty', 'url': url})
 
+        date = datetime.date.today()
+        formated_today = date.strftime('%Y-%m-%d')
+        ids = []
+        for book in Book.objects.all():
+            if formated_today in strftime(book.date, '%Y-%m-%d'):
+                ids.append(book.room_id_id)
 
-        rooms = Room.objects.filter(name=name, capacity__lte=cap_max, capacity__gte=cap_min, projector=choice)
-
-
-
-
-
-        return render(request, 'conference/search-post.html', {'rooms':rooms})
+        return render(request, 'conference/search-post.html', {'rooms': room, 'busy':ids})
