@@ -43,7 +43,7 @@
 
     </tr>
     {% for room in rooms %}
-
+        {% if room.id in all_dates %}
     <tr bgcolor="#d2b48c">
         <td align="center"><h5><a href="{% url 'details' room.id %}"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
@@ -66,7 +66,7 @@
         <td align="center"><h5><form action="room/delete/{{ room.id }}" method="get">
             <button type="submit">Delete</button>
         </form> </h5></td>
-
+        {% endif %}
     {% endfor %}
 </table>
 </body>

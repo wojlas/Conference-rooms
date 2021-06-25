@@ -15,27 +15,25 @@ class RoomList(View):
         date = datetime.date.today()
         formated_today = date.strftime('%Y-%m-%d')
         all_rooms = Room.objects.all().order_by('capacity')
-        all_dates = []
-        for room in all_rooms:
-            one_date = []
-            dates = [strftime(book.date, '%Y-%m-%d') for book in Book.objects.all()]
-            ides = (book.room_id for book in Book.objects.all())
-            if formated_today in dates:
-                one_date.append(ides)
-                one_date.append(dates)
-            all_dates.append(list(one_date))
+        ids = []
+        for book in Book.objects.all():
+            if formated_today in  strftime(book.date, '%Y-%m-%d'):
+                ids.append(book.room_id_id)
 
-        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':formated_today, 'all_dates':all_dates[0]})
+
+        return render(request, 'conference/index.html', context={'rooms':all_rooms, 'date':formated_today, 'all_dates':ids})
 
     def post(self, request):
         date = datetime.date.today()
         formated_today = date.strftime('%Y-%m-%d')
         all_rooms = Room.objects.all().order_by('capacity')
-        for room in all_rooms:
-            dates = [strftime(book.date, '%Y-%m-%d') for book in Book.objects.all()]
-            all_rooms.reserved = formated_today in dates
+        ids = []
+        for book in Book.objects.all():
+            if formated_today in strftime(book.date, '%Y-%m-%d'):
+                ids.append(book.room_id_id)
 
-        return render(request, 'conference/index-post.html', context={'rooms': all_rooms, 'date': formated_today})
+
+        return render(request, 'conference/index-post.html', context={'rooms': all_rooms, 'date': formated_today, 'all_dates':ids})
 
 
 

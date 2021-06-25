@@ -44,7 +44,7 @@
     <tr bgcolor="#d2b48c">
         <td align="center"><h5><a href="{% url 'details' room.id %}"> {{ room.name }} </a></h5></td>
         <td align="center"><h5>{{ room.capacity }}</h5></td>
-        {% if all_dates == room.id %}
+        {% if room.id in all_dates %}
         <td align="center"><h5> Busy </h5></td>
         {% else %}
         <td align="center"><h5> Free </h5></td>
